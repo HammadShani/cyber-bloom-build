@@ -21,6 +21,7 @@ import {
   Target,
   TrendingUp,
   X,
+  type LucideIcon,
 } from "lucide-react";
 import { useEffect, useState, type FormEvent, type ReactNode } from "react";
 
@@ -131,7 +132,7 @@ function Hero() {
           <div className="mt-9 flex flex-wrap items-center gap-3">
             <Button asChild variant="premium" size="lg"><a href="#projects">View My Work <ArrowRight /></a></Button>
             <Button asChild variant="glass" size="lg"><a href="#contact">Let&apos;s Work Together</a></Button>
-            <a href="#contact" className="inline-flex items-center gap-2 px-3 py-3 text-sm font-semibold text-muted-foreground transition-colors hover:text-foreground"><Download className="size-4" /> Download CV</a>
+            <a href="mailto:h26291989@gmail.com?subject=CV%20Request" className="inline-flex items-center gap-2 px-3 py-3 text-sm font-semibold text-muted-foreground transition-colors hover:text-foreground"><Download className="size-4" /> Download CV</a>
           </div>
         </div>
         <HeroVisual />
@@ -226,8 +227,8 @@ function Education() {
 }
 
 function WhyMe() {
-  const items = [[Code2, "Technical Understanding", "My frontend background helps me understand websites beyond surface-level SEO."], [MousePointer2, "Practical Approach", "I focus on hands-on implementation instead of only theoretical SEO."], [BarChart3, "Data Driven", "I use tools such as GSC, GA4, PageSpeed Insights and Google Ads data."], [Sparkles, "Continuous Learning", "I continuously improve my skills across SEO, digital marketing and frontend development."]];
-  return <Section tone><SectionHeading eyebrow="Working together" title="Why Work With Me?" /><div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">{items.map(([Icon, title, copy]) => <article className="why-card reveal" key={title as string}><span className="service-icon"><Icon /></span><h3>{title as string}</h3><p>{copy as string}</p></article>)}</div></Section>;
+  const items: Array<[LucideIcon, string, string]> = [[Code2, "Technical Understanding", "My frontend background helps me understand websites beyond surface-level SEO."], [MousePointer2, "Practical Approach", "I focus on hands-on implementation instead of only theoretical SEO."], [BarChart3, "Data Driven", "I use tools such as GSC, GA4, PageSpeed Insights and Google Ads data."], [Sparkles, "Continuous Learning", "I continuously improve my skills across SEO, digital marketing and frontend development."]];
+  return <Section tone><SectionHeading eyebrow="Working together" title="Why Work With Me?" /><div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">{items.map(([Icon, title, copy]) => <article className="why-card reveal" key={title}><span className="service-icon"><Icon /></span><h3>{title}</h3><p>{copy}</p></article>)}</div></Section>;
 }
 
 function PortfolioNote() { return <div className="px-5 py-16 sm:px-8"><div className="portfolio-note reveal mx-auto max-w-7xl"><MessageSquare /><div><p className="section-kicker">Building with intent</p><h2>Currently building my professional client portfolio.</h2></div></div></div>; }
@@ -254,7 +255,7 @@ function ContactForm() {
 function Field({ label, name, placeholder, type = "text" }: { label: string; name: string; placeholder: string; type?: string }) { return <label><span>{label}</span><input required type={type} name={name} placeholder={placeholder} /></label>; }
 
 function Footer() {
-  return <footer className="border-t border-border px-5 py-12 sm:px-8"><div className="mx-auto grid max-w-7xl gap-8 md:grid-cols-[1fr_auto] md:items-end"><div><a href="#home" className="text-lg font-extrabold">Muhammad Hammad Iqbal</a><p className="mt-2 text-sm leading-6 text-muted-foreground">SEO &amp; Digital Marketing Specialist<br />Frontend Developer</p></div><div className="flex flex-wrap gap-x-5 gap-y-3 text-sm text-muted-foreground">{["About", "Services", "Projects", "Contact"].map((x) => <a key={x} href={`#${x.toLowerCase()}`} className="hover:text-foreground">{x}</a>)}<a href={contactLinks.email}>Email</a><a href={contactLinks.phone}>Phone</a><a href={contactLinks.linkedin} target="_blank" rel="noreferrer">LinkedIn</a><a href="https://github.com/" target="_blank" rel="noreferrer" aria-label="GitHub"><Github className="size-4" /></a></div></div><div className="mx-auto mt-10 max-w-7xl border-t border-border pt-6 text-xs text-muted-foreground">© 2026 Muhammad Hammad Iqbal. All rights reserved.</div></footer>;
+  return <footer className="border-t border-border px-5 py-12 sm:px-8"><div className="mx-auto grid max-w-7xl gap-8 md:grid-cols-[1fr_auto] md:items-end"><div><a href="#home" className="text-lg font-extrabold">Muhammad Hammad Iqbal</a><p className="mt-2 text-sm leading-6 text-muted-foreground">SEO &amp; Digital Marketing Specialist<br />Frontend Developer</p></div><div className="flex flex-wrap gap-x-5 gap-y-3 text-sm text-muted-foreground">{["About", "Services", "Projects", "Contact"].map((x) => <a key={x} href={`#${x.toLowerCase()}`} className="hover:text-foreground">{x}</a>)}<a href={contactLinks.email}>Email</a><a href={contactLinks.phone}>Phone</a><a href={contactLinks.linkedin} target="_blank" rel="noreferrer">LinkedIn</a></div></div><div className="mx-auto mt-10 max-w-7xl border-t border-border pt-6 text-xs text-muted-foreground">© 2026 Muhammad Hammad Iqbal. All rights reserved.</div></footer>;
 }
 
 function Section({ id, tone, children }: { id?: string; tone?: boolean; children: ReactNode }) { return <section id={id} className={`scroll-mt-24 px-5 py-24 sm:px-8 sm:py-28 ${tone ? "section-tone" : ""}`}><div className="mx-auto max-w-7xl">{children}</div></section>; }
