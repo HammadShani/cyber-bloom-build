@@ -1,5 +1,6 @@
 import {
   ArrowRight,
+  ArrowLeft,
   BarChart3,
   Check,
   Code2,
@@ -20,6 +21,8 @@ import {
   Sparkles,
   Target,
   TrendingUp,
+  ChevronLeft,
+  ChevronRight,
   X,
   type LucideIcon,
 } from "lucide-react";
@@ -45,6 +48,35 @@ const marketingSkills = [
   "Negative Keywords", "Search Terms Analysis", "Conversion Tracking",
 ];
 const frontendSkills = ["HTML", "CSS", "JavaScript", "React", "Tailwind CSS", "Bootstrap", "Git", "GitHub"];
+
+const webProjects = Array.from({ length: 12 }, (_, index) => ({
+  name: index === 0 ? "Vopple / Dealer Clip" : `Web Project ${String(index + 1).padStart(2, "0")}`,
+  description: index === 0
+    ? "Frontend project developed during my internship at Cortechsols Pvt. Ltd. for a car-related application."
+    : "Editable project summary — replace this with the project purpose, approach and outcome.",
+  skills: index === 0
+    ? ["React", "JavaScript", "Tailwind CSS", "Responsive UI"]
+    : ["React", "TypeScript", "Tailwind CSS"],
+  live: "",
+  github: "",
+}));
+
+const seoProjects = [
+  {
+    name: "DriftCreatives SEO Showcase",
+    description: "Self-directed SEO project focused on keyword research, on-page optimization, technical SEO and website visibility.",
+    skills: ["Keyword Research", "On-Page SEO", "Technical SEO", "Google Search Console", "Google Analytics 4", "Website Optimization"],
+    live: "https://driftcreatives-seo-showcase.vercel.app/",
+    github: "",
+  },
+  {
+    name: "SEO / Digital Marketing Project 02",
+    description: "Editable project summary — add the project scope, practical work and tools used here.",
+    skills: ["SEO Strategy", "Digital Marketing", "Website Optimization"],
+    live: "",
+    github: "",
+  },
+];
 
 const contactLinks = {
   email: "mailto:h26291989@gmail.com",
@@ -81,6 +113,9 @@ export function Portfolio() {
         <Contact />
       </main>
       <Footer />
+      <a className="whatsapp-float" href="https://wa.me/923192204329" target="_blank" rel="noreferrer" aria-label="Chat with Muhammad on WhatsApp">
+        <WhatsAppIcon />
+      </a>
     </div>
   );
 }
@@ -164,7 +199,7 @@ function FloatingChip({ className, icon, title, detail }: { className: string; i
 }
 
 function Stats() {
-  const stats = [["3+", "Months Frontend Internship"], ["SEO + Google Ads", "Practical Projects"], ["React", "Frontend Experience"], ["80%", "DAE Result"]];
+  const stats = [["Web Development", "Practical Experience"], ["SEO + Google Ads", "Practical Projects"], ["React", "Frontend Experience"], ["5★", "Fiverr Rating"]];
   return <section aria-label="Professional highlights" className="px-5 sm:px-8"><div className="stats-grid mx-auto max-w-7xl">{stats.map(([value, label]) => <div key={label}><strong>{value}</strong><span>{label}</span></div>)}</div></section>;
 }
 
@@ -201,16 +236,29 @@ function Process() {
 }
 
 function Projects() {
-  return <Section id="projects"><SectionHeading eyebrow="Selected work" title="Projects With Practical Purpose" description="Hands-on work across organic search, paid search and frontend product development." /><div className="mt-12 space-y-6"><ProjectCard featured label="SEO Case Study" title="DriftCreatives — SEO Agency Website" description="Self-directed SEO project focused on keyword research, on-page optimization, technical SEO and search visibility." skills={["Keyword Research", "On-Page SEO", "Technical SEO", "Google Search Console", "GA4", "PageSpeed Insights"]} link="https://driftcreatives-seo-showcase.vercel.app/" visual={<SeoMockup />} /><ProjectCard label="Paid Search Project" title="Google Ads Search Campaign — SEO Agency" description="Practical Google Ads Search campaign project covering campaign structure, keyword targeting, negative keywords, ad groups, bidding, budget and search-term analysis." skills={["Google Ads", "Search Campaign", "Keyword Targeting", "Negative Keywords", "Search Terms", "Conversion Tracking"]} visual={<AdsMockup />} /><ProjectCard label="Frontend Case Study" title="Vopple / Dealer Clip" description="Frontend project developed during my internship at Cortechsols Pvt. Ltd. for a car-related application." skills={["React", "JavaScript", "Tailwind CSS", "Bootstrap", "Responsive UI", "Figma to React", "Sign In", "Sign Up", "Onboarding", "Dashboard"]} visual={<FrontendMockup />} /></div></Section>;
+  const [category, setCategory] = useState<"web" | "seo">("web");
+  return <Section id="projects"><SectionHeading eyebrow="Selected work" title="Projects With Practical Purpose" description="Hands-on work across organic search, digital marketing and frontend product development." /><div className="project-tabs reveal" role="tablist" aria-label="Project categories"><button role="tab" aria-selected={category === "web"} onClick={() => setCategory("web")}>Web Development</button><button role="tab" aria-selected={category === "seo"} onClick={() => setCategory("seo")}>SEO &amp; Digital Marketing</button></div><ProjectCarousel key={category} projects={category === "web" ? webProjects : seoProjects} category={category} /></Section>;
 }
 
-function ProjectCard({ featured, label, title, description, skills, link, visual }: { featured?: boolean; label: string; title: string; description: string; skills: string[]; link?: string; visual: ReactNode }) {
-  return <article className={`project-card reveal ${featured ? "project-featured" : ""}`}><div className="project-copy"><p className="section-kicker">{label}</p><h3>{title}</h3><p>{description}</p><div className="mt-6 flex flex-wrap gap-2">{skills.map((skill) => <span className="skill-badge" key={skill}>{skill}</span>)}</div>{link && <Button asChild variant="glass" className="mt-8"><a href={link} target="_blank" rel="noreferrer">View Project <ArrowRight /></a></Button>}</div><div className="project-visual">{visual}</div></article>;
+function ProjectCarousel({ projects, category }: { projects: typeof webProjects; category: "web" | "seo" }) {
+  const [page, setPage] = useState(0);
+  const lastPage = projects.length - 1;
+  const move = (next: number) => setPage(Math.max(0, Math.min(lastPage, next)));
+  return <div className="project-carousel reveal"><div className="project-slider" style={{ transform: `translateX(calc(${page} * (var(--project-card-width) + var(--project-gap)) * -1))` }}>{projects.map((project, index) => <CompactProjectCard key={project.name} project={project} index={index} category={category} />)}</div><div className="carousel-controls"><div className="carousel-arrows"><Button variant="glass" size="icon" onClick={() => move(page - 1)} disabled={page === 0} aria-label="Previous project"><ChevronLeft /></Button><Button variant="glass" size="icon" onClick={() => move(page + 1)} disabled={page === lastPage} aria-label="Next project"><ChevronRight /></Button></div><div className="carousel-dots" aria-label={`Project ${page + 1} of ${projects.length}`}>{projects.map((project, index) => <button key={project.name} className={index === page ? "active" : ""} onClick={() => move(index)} aria-label={`Show project ${index + 1}`} />)}</div><span className="carousel-count">{String(page + 1).padStart(2, "0")} / {String(projects.length).padStart(2, "0")}</span></div></div>;
+}
+
+function CompactProjectCard({ project, index, category }: { project: (typeof webProjects)[number]; index: number; category: "web" | "seo" }) {
+  return <article className="compact-project-card"><div className="compact-project-visual">{category === "seo" ? <SeoMockup /> : index === 0 ? <FrontendMockup /> : <EditableWebMockup index={index} />}</div><div className="compact-project-copy"><p className="section-kicker">{category === "seo" ? "SEO / Digital Marketing" : `Web Development · ${String(index + 1).padStart(2, "0")}`}</p><h3>{project.name}</h3><p>{project.description}</p><div className="mt-5 flex flex-wrap gap-2">{project.skills.map((skill) => <span className="skill-badge" key={skill}>{skill}</span>)}</div><div className="mt-auto flex flex-wrap gap-2 pt-6"><ProjectLink href={project.live} icon={<Globe2 />} label="Live Demo" /><ProjectLink href={project.github} icon={<Github />} label="GitHub" /></div></div></article>;
+}
+
+function ProjectLink({ href, icon, label }: { href: string; icon: ReactNode; label: string }) {
+  return href ? <Button asChild variant="glass" size="sm"><a href={href} target="_blank" rel="noreferrer">{icon}{label}</a></Button> : <Button variant="glass" size="sm" disabled title="Link can be added later">{icon}{label}</Button>;
 }
 
 function SeoMockup() { return <div className="mock-window"><MockTop /><div className="mock-search"><Search /> drift creatives seo</div><div className="mock-metrics"><span><b>Keywords</b><i /></span><span><b>Pages</b><i /></span><span><b>Health</b><i /></span></div><div className="mock-graph">{[28, 40, 36, 55, 67, 63, 85].map((n) => <i key={n} style={{ height: `${n}%` }} />)}</div></div>; }
 function AdsMockup() { return <div className="mock-window"><MockTop /><div className="campaign-row"><span className="status-dot" />Search campaign <b>Structured</b></div>{["Core services", "High intent", "Brand terms"].map((x, i) => <div className="ad-row" key={x}><span>{x}<small>{i + 4} keyword groups</small></span><i style={{ width: `${70 - i * 14}%` }} /></div>)}</div>; }
 function FrontendMockup() { return <div className="mock-window frontend-mock"><MockTop /><div className="app-sidebar"><i /><i /><i /><i /></div><div className="app-content"><div className="app-title" /><div className="vehicle-grid"><i /><i /><i /></div><div className="app-panel"><span /><span /></div></div></div>; }
+function EditableWebMockup({ index }: { index: number }) { return <div className={`mock-window editable-mock mock-variant-${(index % 3) + 1}`}><MockTop /><div className="editable-nav"><i /><i /></div><div className="editable-heading" /><div className="editable-copy" /><div className="editable-layout"><i /><i /><i /></div></div>; }
 function MockTop() { return <div className="mock-top"><span /><span /><span /></div>; }
 
 function Experience() {
@@ -234,7 +282,7 @@ function WhyMe() {
 function PortfolioNote() { return <div className="px-5 py-16 sm:px-8"><div className="portfolio-note reveal mx-auto max-w-7xl"><MessageSquare /><div><p className="section-kicker">Building with intent</p><h2>Currently building my professional client portfolio.</h2></div></div></div>; }
 
 function Contact() {
-  return <Section id="contact"><div className="contact-shell"><div><SectionHeading eyebrow="Contact" title="Let’s Work Together" description="Have a website, SEO challenge or digital project in mind? Let’s talk." /><div className="mt-9 grid gap-3"><ContactLine icon={<Mail />} label="Email" value="h26291989@gmail.com" href={contactLinks.email} /><ContactLine icon={<Phone />} label="Phone" value="+92 319 2204329" href={contactLinks.phone} /><ContactLine icon={<MapPin />} label="Location" value="Chakwal, Punjab, Pakistan" /><ContactLine icon={<Linkedin />} label="LinkedIn" value="Muhammad Hammad Iqbal" href={contactLinks.linkedin} /></div></div><ContactForm /></div></Section>;
+  return <Section id="contact"><div className="contact-shell"><div><SectionHeading eyebrow="Contact" title="Let’s Work Together" description="Have a website, SEO challenge or digital project in mind? Let’s talk." /><div className="mt-9 grid gap-3"><ContactLine icon={<Mail />} label="Email" value="h26291989@gmail.com" href={contactLinks.email} /><ContactLine icon={<Phone />} label="Phone" value="+92 319 2204329" href={contactLinks.phone} /><ContactLine icon={<WhatsAppIcon />} label="WhatsApp" value="0319 2204329" href="https://wa.me/923192204329" /><ContactLine icon={<MapPin />} label="Location" value="Chakwal, Punjab, Pakistan" /><ContactLine icon={<Linkedin />} label="LinkedIn" value="Muhammad Hammad Iqbal" href={contactLinks.linkedin} /></div></div><ContactForm /></div></Section>;
 }
 
 function ContactLine({ icon, label, value, href }: { icon: ReactNode; label: string; value: string; href?: string }) {
@@ -253,6 +301,8 @@ function ContactForm() {
   return <form className="contact-form reveal" onSubmit={submit}><div className="grid gap-4 sm:grid-cols-2"><Field label="Name" name="name" placeholder="Your name" /><Field label="Email" name="email" placeholder="you@example.com" type="email" /></div><Field label="Subject" name="subject" placeholder="What would you like to discuss?" /><label><span>Message</span><textarea required name="message" rows={5} placeholder="Tell me about your project" /></label><Button type="submit" variant="premium" size="lg" className="w-full sm:w-auto">Send Message <Send /></Button></form>;
 }
 function Field({ label, name, placeholder, type = "text" }: { label: string; name: string; placeholder: string; type?: string }) { return <label><span>{label}</span><input required type={type} name={name} placeholder={placeholder} /></label>; }
+
+function WhatsAppIcon() { return <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12.04 2a9.84 9.84 0 0 0-8.45 14.87L2 22l5.28-1.54A9.94 9.94 0 1 0 12.04 2Zm5.78 14.04c-.24.67-1.4 1.28-1.94 1.36-.5.08-1.13.11-1.82-.11-.42-.13-.96-.31-1.65-.61-2.9-1.25-4.79-4.16-4.94-4.35-.14-.2-1.18-1.57-1.18-3 0-1.42.74-2.12 1.01-2.41.26-.29.57-.36.77-.36h.55c.18.01.41-.07.64.49.24.58.81 1.99.88 2.13.07.14.12.31.02.5-.09.2-.14.31-.28.48-.14.17-.3.38-.43.5-.14.15-.29.3-.12.59.17.29.75 1.24 1.61 2.01 1.1.98 2.04 1.29 2.33 1.43.29.15.46.13.63-.07.17-.19.72-.84.91-1.13.19-.29.38-.24.65-.14.26.1 1.68.79 1.96.94.29.14.48.21.55.33.08.12.08.7-.16 1.37Z"/></svg>; }
 
 function Footer() {
   return <footer className="border-t border-border px-5 py-12 sm:px-8"><div className="mx-auto grid max-w-7xl gap-8 md:grid-cols-[1fr_auto] md:items-end"><div><a href="#home" className="text-lg font-extrabold">Muhammad Hammad Iqbal</a><p className="mt-2 text-sm leading-6 text-muted-foreground">SEO &amp; Digital Marketing Specialist<br />Frontend Developer</p></div><div className="flex flex-wrap gap-x-5 gap-y-3 text-sm text-muted-foreground">{["About", "Services", "Projects", "Contact"].map((x) => <a key={x} href={`#${x.toLowerCase()}`} className="hover:text-foreground">{x}</a>)}<a href={contactLinks.email}>Email</a><a href={contactLinks.phone}>Phone</a><a href={contactLinks.linkedin} target="_blank" rel="noreferrer">LinkedIn</a></div></div><div className="mx-auto mt-10 max-w-7xl border-t border-border pt-6 text-xs text-muted-foreground">© 2026 Muhammad Hammad Iqbal. All rights reserved.</div></footer>;
