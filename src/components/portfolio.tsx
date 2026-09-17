@@ -1,6 +1,5 @@
 import {
   ArrowRight,
-  ArrowLeft,
   BarChart3,
   Check,
   Code2,
@@ -237,14 +236,14 @@ function Process() {
 
 function Projects() {
   const [category, setCategory] = useState<"web" | "seo">("web");
-  return <Section id="projects"><SectionHeading eyebrow="Selected work" title="Projects With Practical Purpose" description="Hands-on work across organic search, digital marketing and frontend product development." /><div className="project-tabs reveal" role="tablist" aria-label="Project categories"><button role="tab" aria-selected={category === "web"} onClick={() => setCategory("web")}>Web Development</button><button role="tab" aria-selected={category === "seo"} onClick={() => setCategory("seo")}>SEO &amp; Digital Marketing</button></div><ProjectCarousel key={category} projects={category === "web" ? webProjects : seoProjects} category={category} /></Section>;
+  return <Section id="projects"><SectionHeading eyebrow="Selected work" title="Projects With Practical Purpose" description="Hands-on work across organic search, digital marketing and frontend product development." /><div className="project-tabs reveal" role="tablist" aria-label="Project categories"><Button variant="ghost" role="tab" aria-selected={category === "web"} onClick={() => setCategory("web")}>Web Development</Button><Button variant="ghost" role="tab" aria-selected={category === "seo"} onClick={() => setCategory("seo")}>SEO &amp; Digital Marketing</Button></div><ProjectCarousel key={category} projects={category === "web" ? webProjects : seoProjects} category={category} /></Section>;
 }
 
 function ProjectCarousel({ projects, category }: { projects: typeof webProjects; category: "web" | "seo" }) {
   const [page, setPage] = useState(0);
   const lastPage = projects.length - 1;
   const move = (next: number) => setPage(Math.max(0, Math.min(lastPage, next)));
-  return <div className="project-carousel reveal"><div className="project-slider" style={{ transform: `translateX(calc(${page} * (var(--project-card-width) + var(--project-gap)) * -1))` }}>{projects.map((project, index) => <CompactProjectCard key={project.name} project={project} index={index} category={category} />)}</div><div className="carousel-controls"><div className="carousel-arrows"><Button variant="glass" size="icon" onClick={() => move(page - 1)} disabled={page === 0} aria-label="Previous project"><ChevronLeft /></Button><Button variant="glass" size="icon" onClick={() => move(page + 1)} disabled={page === lastPage} aria-label="Next project"><ChevronRight /></Button></div><div className="carousel-dots" aria-label={`Project ${page + 1} of ${projects.length}`}>{projects.map((project, index) => <button key={project.name} className={index === page ? "active" : ""} onClick={() => move(index)} aria-label={`Show project ${index + 1}`} />)}</div><span className="carousel-count">{String(page + 1).padStart(2, "0")} / {String(projects.length).padStart(2, "0")}</span></div></div>;
+  return <div className="project-carousel reveal"><div className="project-slider" style={{ transform: `translateX(calc(${page} * (var(--project-card-width) + var(--project-gap)) * -1))` }}>{projects.map((project, index) => <CompactProjectCard key={project.name} project={project} index={index} category={category} />)}</div><div className="carousel-controls"><div className="carousel-arrows"><Button variant="glass" size="icon" onClick={() => move(page - 1)} disabled={page === 0} aria-label="Previous project"><ChevronLeft /></Button><Button variant="glass" size="icon" onClick={() => move(page + 1)} disabled={page === lastPage} aria-label="Next project"><ChevronRight /></Button></div><div className="carousel-dots" aria-label={`Project ${page + 1} of ${projects.length}`}>{projects.map((project, index) => <Button variant="ghost" size="icon" key={project.name} className={index === page ? "active" : ""} onClick={() => move(index)} aria-label={`Show project ${index + 1}`} />)}</div><span className="carousel-count">{String(page + 1).padStart(2, "0")} / {String(projects.length).padStart(2, "0")}</span></div></div>;
 }
 
 function CompactProjectCard({ project, index, category }: { project: (typeof webProjects)[number]; index: number; category: "web" | "seo" }) {
