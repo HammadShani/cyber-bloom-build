@@ -19,6 +19,7 @@ import {
   Package,
   Palette,
   Phone,
+  Rocket,
   Search,
   Send,
   Sparkles,
@@ -250,14 +251,23 @@ function About() {
 function ProfileLine({ icon, text }: { icon: ReactNode; text: string }) { return <div className="flex items-center gap-3 text-muted-foreground"><span className="text-primary">{icon}</span><span className="min-w-0 break-words">{text}</span></div>; }
 
 function Services() {
-  return <Section id="services" tone><SectionHeading eyebrow="Services" title="How I Can Help" description="Focused digital services that connect search visibility, paid acquisition and solid website foundations." /><div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{services.map(([Icon, title, description], index) => <article key={title} className={`service-card reveal ${index === 6 ? "lg:col-span-2" : ""}`}><div className="flex items-start justify-between"><span className="service-icon"><Icon /></span><ArrowRight className="service-arrow" /></div><h3>{title}</h3><p>{description}</p></article>)}</div></Section>;
+  return <Section id="services" tone><SectionHeading eyebrow="Services" title="How I Can Help" description="Focused digital services that connect search visibility, paid acquisition and solid website foundations." /><div className="services-grid mt-12">{services.map(({ number, icon: Icon, title, description, skills, tone }) => <motion.article key={title} className={`service-card service-card-${tone} reveal`} whileHover={{ y: -7 }} transition={{ duration: .28, ease: "easeOut" }}><div className="service-card-head"><span className="service-icon"><Icon /></span><span className="service-number">{number}</span></div><h3>{title}</h3><p>{description}</p><div className="service-tags">{skills.map((skill) => <span key={skill}>{skill}</span>)}</div><a className="service-cta" href="#contact">Discuss a project <ArrowRight /></a></motion.article>)}</div></Section>;
 }
 
 function Skills() {
-  return <Section id="skills"><SectionHeading eyebrow="Capabilities" title="Skills Built Around Search & Craft" /><div className="mt-12 grid gap-5 lg:grid-cols-2"><SkillGroup icon={<Target />} title="SEO & Digital Marketing" skills={marketingSkills} /><SkillGroup icon={<Code2 />} title="Frontend Development" skills={frontendSkills} /></div></Section>;
+  return <Section id="skills"><SectionHeading eyebrow="Capabilities" title="Skills Built Around Search & Craft" /><div className="skills-experience mt-12"><TechnicalProficiency /><ToolsGrid /></div></Section>;
 }
 
-function SkillGroup({ icon, title, skills }: { icon: ReactNode; title: string; skills: string[] }) { return <article className="skill-panel reveal"><div className="mb-7 flex items-center gap-3"><span className="service-icon">{icon}</span><h3 className="text-lg font-bold">{title}</h3></div><div className="flex flex-wrap gap-2">{skills.map((skill) => <span key={skill} className="skill-badge"><Check />{skill}</span>)}</div></article>; }
+function TechnicalProficiency() {
+  const ref = useRef<HTMLElement>(null);
+  const inView = useInView(ref, { once: true, amount: .2 });
+  const reduceMotion = useReducedMotion();
+  return <article ref={ref} className="skill-panel proficiency-panel reveal"><div className="panel-heading"><span className="service-icon"><TrendingUp /></span><div><p className="section-kicker">Core capabilities</p><h3>Technical Proficiency</h3></div></div><div className="proficiency-list">{proficiencySkills.map(([skill, value], index) => <div className="proficiency-item" key={skill}><div className="proficiency-label"><span>{skill}</span><strong>{value}%</strong></div><div className="proficiency-track"><motion.span initial={{ scaleX: 0 }} animate={{ scaleX: inView ? value / 100 : 0 }} transition={{ duration: reduceMotion ? 0 : .9, delay: reduceMotion ? 0 : index * .055, ease: [0.22, 1, 0.36, 1] }} /></div></div>)}</div></article>;
+}
+
+function ToolsGrid() {
+  return <article className="skill-panel tools-panel reveal"><div className="panel-heading"><span className="service-icon"><TerminalSquare /></span><div><p className="section-kicker">Daily workflow</p><h3>Tools &amp; Technologies</h3></div></div><div className="tools-grid">{tools.map(([Icon, name], index) => <motion.div className="tool-card" key={name} initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: .4 }} transition={{ duration: .35, delay: index * .04 }} whileHover={{ y: -4 }}><span><Icon /></span><b>{name}</b></motion.div>)}</div></article>;
+}
 
 function Process() {
   const steps = [["01", "Research", "Understand the business, audience and search intent."], ["02", "Strategy", "Create keyword and optimization strategy."], ["03", "Optimize", "Improve content, technical SEO and website structure."], ["04", "Measure", "Monitor performance and refine the strategy."]];
@@ -266,14 +276,29 @@ function Process() {
 
 function Projects() {
   const [category, setCategory] = useState<"web" | "seo">("web");
-  return <Section id="projects"><SectionHeading eyebrow="Selected work" title="Projects With Practical Purpose" description="Hands-on work across organic search, digital marketing and frontend product development." /><div className="project-tabs reveal" role="tablist" aria-label="Project categories"><Button variant="ghost" role="tab" aria-selected={category === "web"} onClick={() => setCategory("web")}>Web Development</Button><Button variant="ghost" role="tab" aria-selected={category === "seo"} onClick={() => setCategory("seo")}>SEO &amp; Digital Marketing</Button></div><ProjectCarousel key={category} projects={category === "web" ? webProjects : seoProjects} category={category} /></Section>;
+  const [positions, setPositions] = useState({ web: 0, seo: 0 });
+  const selectCategory = (next: "web" | "seo") => {
+    setPositions((current) => ({ ...current, [next]: 0 }));
+    setCategory(next);
+  };
+  return <Section id="projects"><SectionHeading eyebrow="Selected work" title="Projects With Practical Purpose" description="Hands-on work across organic search, digital marketing and frontend product development." /><div className="project-tabs reveal" role="tablist" aria-label="Project categories"><Button variant="ghost" role="tab" aria-selected={category === "web"} onClick={() => selectCategory("web")}>Web Development</Button><Button variant="ghost" role="tab" aria-selected={category === "seo"} onClick={() => selectCategory("seo")}>SEO &amp; Digital Marketing</Button></div><AnimatePresence mode="wait" initial={false}>{category === "web" ? <motion.div key="web" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: .28 }}><ProjectCarousel projects={webProjects} category="web" page={positions.web} setPage={(page) => setPositions((current) => ({ ...current, web: page }))} /></motion.div> : <motion.div key="seo" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: .28 }}><ProjectCarousel projects={seoProjects} category="seo" page={positions.seo} setPage={(page) => setPositions((current) => ({ ...current, seo: page }))} /></motion.div>}</AnimatePresence></Section>;
 }
 
-function ProjectCarousel({ projects, category }: { projects: typeof webProjects; category: "web" | "seo" }) {
-  const [page, setPage] = useState(0);
-  const lastPage = projects.length - 1;
+function ProjectCarousel({ projects, category, page, setPage }: { projects: typeof webProjects; category: "web" | "seo"; page: number; setPage: (page: number) => void }) {
+  const [visibleCards, setVisibleCards] = useState(3);
+  const reduceMotion = useReducedMotion();
+  useEffect(() => {
+    const updateVisibleCards = () => setVisibleCards(window.innerWidth < 768 ? 1 : window.innerWidth < 1024 ? 2 : 3);
+    updateVisibleCards();
+    window.addEventListener("resize", updateVisibleCards);
+    return () => window.removeEventListener("resize", updateVisibleCards);
+  }, []);
+  const lastPage = Math.max(0, projects.length - visibleCards);
+  useEffect(() => {
+    if (page > lastPage) setPage(lastPage);
+  }, [lastPage, page, setPage]);
   const move = (next: number) => setPage(Math.max(0, Math.min(lastPage, next)));
-  return <div className="project-carousel reveal"><div className="project-slider" style={{ transform: `translateX(calc(${page} * (var(--project-card-width) + var(--project-gap)) * -1))` }}>{projects.map((project, index) => <CompactProjectCard key={project.name} project={project} index={index} category={category} />)}</div><div className="carousel-controls"><div className="carousel-arrows"><Button variant="glass" size="icon" onClick={() => move(page - 1)} disabled={page === 0} aria-label="Previous project"><ChevronLeft /></Button><Button variant="glass" size="icon" onClick={() => move(page + 1)} disabled={page === lastPage} aria-label="Next project"><ChevronRight /></Button></div><div className="carousel-dots" aria-label={`Project ${page + 1} of ${projects.length}`}>{projects.map((project, index) => <Button variant="ghost" size="icon" key={project.name} className={index === page ? "active" : ""} onClick={() => move(index)} aria-label={`Show project ${index + 1}`} />)}</div><span className="carousel-count">{String(page + 1).padStart(2, "0")} / {String(projects.length).padStart(2, "0")}</span></div></div>;
+  return <div className="project-carousel reveal"><motion.div className="project-slider" animate={{ x: `calc(${page} * (var(--project-card-width) + var(--project-gap)) * -1)` }} transition={{ duration: reduceMotion ? 0 : .58, ease: [0.22, 1, 0.36, 1] }}>{projects.map((project, index) => <motion.div className="project-card-motion" key={project.name} animate={{ opacity: index >= page && index < page + visibleCards ? 1 : .52, scale: index === page ? 1 : .975 }} transition={{ duration: .35 }}><CompactProjectCard project={project} index={index} category={category} /></motion.div>)}</motion.div><div className="carousel-controls"><div className="carousel-arrows"><Button variant="glass" size="icon" onClick={() => move(page - 1)} disabled={page === 0} aria-label="Previous project"><ChevronLeft /></Button><Button variant="glass" size="icon" onClick={() => move(page + 1)} disabled={page === lastPage} aria-label="Next project"><ChevronRight /></Button></div><div className="carousel-dots" aria-label={`Project ${page + 1} of ${projects.length}`}>{Array.from({ length: lastPage + 1 }, (_, index) => <Button variant="ghost" size="icon" key={`${category}-${index}`} className={index === page ? "active" : ""} onClick={() => move(index)} aria-label={`Show project group ${index + 1}`} />)}</div><span className="carousel-count">{String(page + 1).padStart(2, "0")} / {String(projects.length).padStart(2, "0")}</span></div></div>;
 }
 
 function CompactProjectCard({ project, index, category }: { project: (typeof webProjects)[number]; index: number; category: "web" | "seo" }) {
