@@ -1,11 +1,13 @@
 import {
   ArrowRight,
   BarChart3,
+  Braces,
   Check,
   Code2,
   Download,
   Gauge,
   Github,
+  GitBranch,
   Globe2,
   LayoutTemplate,
   Linkedin,
@@ -14,39 +16,67 @@ import {
   Menu,
   MessageSquare,
   MousePointer2,
+  Package,
+  Palette,
   Phone,
   Search,
   Send,
   Sparkles,
   Target,
+  TerminalSquare,
   TrendingUp,
+  Wrench,
   ChevronLeft,
   ChevronRight,
   X,
   type LucideIcon,
 } from "lucide-react";
-import { useEffect, useState, type FormEvent, type ReactNode } from "react";
+import { AnimatePresence, motion, useInView, useReducedMotion } from "framer-motion";
+import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
 
 import { Button } from "@/components/ui/button";
 
 const navItems = ["Home", "About", "Skills", "Services", "Projects", "Experience", "Contact"];
 
 const services = [
-  [Search, "Keyword Research", "Find relevant keywords and search opportunities based on user intent and business goals."],
-  [LayoutTemplate, "On-Page SEO", "Optimize titles, meta descriptions, headings, URLs, internal links and content structure."],
-  [Gauge, "Technical SEO", "Improve indexing, sitemaps, robots.txt, performance and site structure."],
-  [Globe2, "Off-Page SEO", "Build a practical off-page strategy focused on relevant backlinks and authority."],
-  [Target, "Google Ads", "Structure Search campaigns with keyword targeting, ad groups and negative keywords."],
-  [BarChart3, "SEO Audits", "Identify SEO issues, technical problems and clear optimization opportunities."],
-  [Code2, "Frontend Development", "Build responsive interfaces with HTML, CSS, JavaScript, React and modern CSS tools."],
+  {
+    number: "01",
+    icon: Braces,
+    title: "Frontend Development",
+    description: "Responsive, polished interfaces built with a practical modern frontend stack.",
+    skills: ["React", "HTML", "CSS", "JavaScript", "Tailwind CSS", "Bootstrap", "Responsive Websites", "Modern UI Development"],
+    tone: "frontend",
+  },
+  {
+    number: "02",
+    icon: Search,
+    title: "SEO",
+    description: "Search-focused improvements that strengthen website structure, relevance and visibility.",
+    skills: ["Keyword Research", "On-Page SEO", "Technical SEO", "Off-Page SEO", "Google Search Console", "GA4", "SEO Audits", "Website Optimization"],
+    tone: "seo",
+  },
+  {
+    number: "03",
+    icon: BarChart3,
+    title: "Google Ads",
+    description: "Well-organized Search campaigns built around relevant terms and practical optimization.",
+    skills: ["Search Campaigns", "Keyword Research", "Negative Keywords", "Search Terms Analysis", "Campaign Optimization", "Basic Conversion Tracking"],
+    tone: "ads",
+  },
 ] as const;
 
-const marketingSkills = [
-  "Keyword Research", "On-Page SEO", "Technical SEO", "Off-Page SEO", "SEO Auditing",
-  "Google Search Console", "GA4", "PageSpeed Insights", "Google Ads", "Search Campaigns",
-  "Negative Keywords", "Search Terms Analysis", "Conversion Tracking",
-];
-const frontendSkills = ["HTML", "CSS", "JavaScript", "React", "Tailwind CSS", "Bootstrap", "Git", "GitHub"];
+// Self-assessed, editable proficiency values. Update these numbers as skills develop.
+const proficiencySkills = [
+  ["HTML5", 90], ["CSS3", 88], ["JavaScript", 82], ["React.js", 80],
+  ["Tailwind CSS", 88], ["Bootstrap", 84], ["Responsive Design", 90], ["SEO", 82],
+  ["Google Search Console", 78], ["Google Analytics 4", 74], ["Google Ads", 72],
+] as const;
+
+const tools = [
+  [Code2, "VS Code"], [GitBranch, "Git & GitHub"], [Palette, "Figma"],
+  [Wrench, "Chrome DevTools"], [Rocket, "Vercel"], [Package, "npm"],
+  [Search, "Google Search Console"], [BarChart3, "Google Analytics"], [Target, "Google Ads"],
+] as const;
 
 const webProjects = Array.from({ length: 12 }, (_, index) => ({
   name: index === 0 ? "Vopple / Dealer Clip" : `Web Project ${String(index + 1).padStart(2, "0")}`,
