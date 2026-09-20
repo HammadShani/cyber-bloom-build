@@ -11,3 +11,7 @@
 - [ ] Upgrade animated skills and tools presentation
 - [ ] Upgrade services into three premium cards
 - [ ] Fix and animate independent project carousels
+- [ ] Add selective premium interactions without redesigning existing sections
+- [ ] Add project detail modal and All Projects filtering while preserving carousel behavior
+- [ ] Add cursor, magnetic actions, scroll progress, marquee, availability, copy contact, active navigation, hero interaction, contact CTA, and subtle easter egg
+- [ ] Verify all new interactions on desktop and mobile with no console errors or overflow
