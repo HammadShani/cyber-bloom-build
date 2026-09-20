@@ -79,7 +79,7 @@ const tools = [
   [Search, "Google Search Console"], [BarChart3, "Google Analytics"], [Target, "Google Ads"],
 ] as const;
 
-const webProjects = Array.from({ length: 12 }, (_, index) => ({
+const webDevelopmentProjects = Array.from({ length: 12 }, (_, index) => ({
   name: index === 0 ? "Vopple / Dealer Clip" : `Web Project ${String(index + 1).padStart(2, "0")}`,
   description: index === 0
     ? "Frontend project developed during my internship at Cortechsols Pvt. Ltd. for a car-related application."
@@ -276,16 +276,21 @@ function Process() {
 
 function Projects() {
   const [category, setCategory] = useState<"web" | "seo">("web");
-  const [positions, setPositions] = useState({ web: 0, seo: 0 });
+  const [webDevelopmentIndex, setWebDevelopmentIndex] = useState(0);
+  const [seoIndex, setSeoIndex] = useState(0);
   const selectCategory = (next: "web" | "seo") => {
-    setPositions((current) => ({ ...current, [next]: 0 }));
+    setWebDevelopmentIndex(0);
+    setSeoIndex(0);
     setCategory(next);
   };
-  return <Section id="projects"><SectionHeading eyebrow="Selected work" title="Projects With Practical Purpose" description="Hands-on work across organic search, digital marketing and frontend product development." /><div className="project-tabs reveal" role="tablist" aria-label="Project categories"><Button variant="ghost" role="tab" aria-selected={category === "web"} onClick={() => selectCategory("web")}>Web Development</Button><Button variant="ghost" role="tab" aria-selected={category === "seo"} onClick={() => selectCategory("seo")}>SEO &amp; Digital Marketing</Button></div><AnimatePresence mode="wait" initial={false}>{category === "web" ? <motion.div key="web" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: .28 }}><ProjectCarousel projects={webProjects} category="web" page={positions.web} setPage={(page) => setPositions((current) => ({ ...current, web: page }))} /></motion.div> : <motion.div key="seo" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: .28 }}><ProjectCarousel projects={seoProjects} category="seo" page={positions.seo} setPage={(page) => setPositions((current) => ({ ...current, seo: page }))} /></motion.div>}</AnimatePresence></Section>;
+  return <Section id="projects"><div className="projects-heading"><SectionHeading eyebrow="Selected work" title="Projects With Practical Purpose" description="Hands-on work across organic search, digital marketing and frontend product development." /><div className="project-tabs reveal" role="tablist" aria-label="Project categories"><Button variant="ghost" role="tab" aria-selected={category === "web"} onClick={() => selectCategory("web")}>{category === "web" && <motion.span className="project-tab-indicator" layoutId="project-tab-indicator" />}<span>Web Development</span></Button><Button variant="ghost" role="tab" aria-selected={category === "seo"} onClick={() => selectCategory("seo")}>{category === "seo" && <motion.span className="project-tab-indicator" layoutId="project-tab-indicator" />}<span>SEO &amp; Digital Marketing</span></Button></div></div><div className="projects-stage"><AnimatePresence mode="wait" initial={false}>{category === "web" ? <motion.div key="web-projects" initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: .3, ease: "easeOut" }}><ProjectCarousel projects={webDevelopmentProjects} category="web" currentIndex={webDevelopmentIndex} setCurrentIndex={setWebDevelopmentIndex} /></motion.div> : <motion.div key="seo-projects" initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: .3, ease: "easeOut" }}><ProjectCarousel projects={seoProjects} category="seo" currentIndex={seoIndex} setCurrentIndex={setSeoIndex} /></motion.div>}</AnimatePresence></div></Section>;
 }
 
-function ProjectCarousel({ projects, category, page, setPage }: { projects: typeof webProjects; category: "web" | "seo"; page: number; setPage: (page: number) => void }) {
+type Project = (typeof webDevelopmentProjects)[number];
+
+function ProjectCarousel({ projects, category, currentIndex, setCurrentIndex }: { projects: Project[]; category: "web" | "seo"; currentIndex: number; setCurrentIndex: (index: number) => void }) {
   const [visibleCards, setVisibleCards] = useState(3);
+  const [direction, setDirection] = useState(1);
   const reduceMotion = useReducedMotion();
   useEffect(() => {
     const updateVisibleCards = () => setVisibleCards(window.innerWidth < 768 ? 1 : window.innerWidth < 1024 ? 2 : 3);
@@ -293,16 +298,22 @@ function ProjectCarousel({ projects, category, page, setPage }: { projects: type
     window.addEventListener("resize", updateVisibleCards);
     return () => window.removeEventListener("resize", updateVisibleCards);
   }, []);
-  const lastPage = Math.max(0, projects.length - visibleCards);
+  const maximumIndex = Math.max(0, projects.length - visibleCards);
   useEffect(() => {
-    if (page > lastPage) setPage(lastPage);
-  }, [lastPage, page, setPage]);
-  const move = (next: number) => setPage(Math.max(0, Math.min(lastPage, next)));
-  return <div className="project-carousel reveal"><motion.div className="project-slider" animate={{ x: `calc(${page} * (var(--project-card-width) + var(--project-gap)) * -1)` }} transition={{ duration: reduceMotion ? 0 : .58, ease: [0.22, 1, 0.36, 1] }}>{projects.map((project, index) => <motion.div className="project-card-motion" key={project.name} animate={{ opacity: index >= page && index < page + visibleCards ? 1 : .52, scale: index === page ? 1 : .975 }} transition={{ duration: .35 }}><CompactProjectCard project={project} index={index} category={category} /></motion.div>)}</motion.div><div className="carousel-controls"><div className="carousel-arrows"><Button variant="glass" size="icon" onClick={() => move(page - 1)} disabled={page === 0} aria-label="Previous project"><ChevronLeft /></Button><Button variant="glass" size="icon" onClick={() => move(page + 1)} disabled={page === lastPage} aria-label="Next project"><ChevronRight /></Button></div><div className="carousel-dots" aria-label={`Project ${page + 1} of ${projects.length}`}>{Array.from({ length: lastPage + 1 }, (_, index) => <Button variant="ghost" size="icon" key={`${category}-${index}`} className={index === page ? "active" : ""} onClick={() => move(index)} aria-label={`Show project group ${index + 1}`} />)}</div><span className="carousel-count">{String(page + 1).padStart(2, "0")} / {String(projects.length).padStart(2, "0")}</span></div></div>;
+    if (currentIndex > maximumIndex) setCurrentIndex(0);
+  }, [currentIndex, maximumIndex, setCurrentIndex]);
+  const move = (next: number) => {
+    const safeIndex = Math.max(0, Math.min(maximumIndex, next));
+    setDirection(safeIndex >= currentIndex ? 1 : -1);
+    setCurrentIndex(safeIndex);
+  };
+  const visibleProjects = projects.slice(currentIndex, currentIndex + visibleCards);
+  const groupSize = Math.min(visibleCards, visibleProjects.length);
+  return <div className="project-carousel reveal"><div className="project-viewport"><AnimatePresence initial={false} custom={direction} mode="popLayout"><motion.div key={`${category}-${currentIndex}-${visibleCards}`} custom={direction} variants={{ enter: (travel: number) => ({ x: reduceMotion ? 0 : travel * 54, opacity: 0, scale: .985 }), center: { x: 0, opacity: 1, scale: 1 }, exit: (travel: number) => ({ x: reduceMotion ? 0 : travel * -54, opacity: 0, scale: .985 }) }} initial="enter" animate="center" exit="exit" transition={{ duration: reduceMotion ? 0 : .42, ease: [0.22, 1, 0.36, 1] }} className={`project-visible-grid project-visible-grid-${groupSize}`} drag={visibleCards === 1 ? "x" : false} dragConstraints={{ left: 0, right: 0 }} dragElastic={.12} onDragEnd={(_, info) => { if (info.offset.x < -45) move(currentIndex + 1); if (info.offset.x > 45) move(currentIndex - 1); }}>{visibleProjects.map((project, offset) => <motion.div className="project-card-motion" key={`${category}-${project.name}`} initial={{ opacity: 0, scale: .97 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: .3, delay: reduceMotion ? 0 : offset * .045 }}><CompactProjectCard project={project} index={currentIndex + offset} total={projects.length} category={category} /></motion.div>)}</motion.div></AnimatePresence></div><div className="carousel-controls"><div className="carousel-arrows"><Button variant="glass" onClick={() => move(currentIndex - 1)} disabled={currentIndex === 0}><ChevronLeft /> Previous</Button><Button variant="glass" onClick={() => move(currentIndex + 1)} disabled={currentIndex === maximumIndex}>Next <ChevronRight /></Button></div><div className="carousel-dots" aria-label={`Project group ${currentIndex + 1} of ${maximumIndex + 1}`}>{Array.from({ length: maximumIndex + 1 }, (_, index) => <Button variant="ghost" size="icon" key={`${category}-${index}`} className={index === currentIndex ? "active" : ""} onClick={() => move(index)} aria-label={`Show project group ${index + 1}`} />)}</div><span className="carousel-count">{String(currentIndex + 1).padStart(2, "0")} / {String(projects.length).padStart(2, "0")}</span></div></div>;
 }
 
-function CompactProjectCard({ project, index, category }: { project: (typeof webProjects)[number]; index: number; category: "web" | "seo" }) {
-  return <article className="compact-project-card"><div className="compact-project-visual">{category === "seo" ? <SeoMockup /> : index === 0 ? <FrontendMockup /> : <EditableWebMockup index={index} />}</div><div className="compact-project-copy"><p className="section-kicker">{category === "seo" ? "SEO / Digital Marketing" : `Web Development · ${String(index + 1).padStart(2, "0")}`}</p><h3>{project.name}</h3><p>{project.description}</p><div className="mt-5 flex flex-wrap gap-2">{project.skills.map((skill) => <span className="skill-badge" key={skill}>{skill}</span>)}</div><div className="mt-auto flex flex-wrap gap-2 pt-6"><ProjectLink href={project.live} icon={<Globe2 />} label="Live Demo" /><ProjectLink href={project.github} icon={<Github />} label="GitHub" /></div></div></article>;
+function CompactProjectCard({ project, index, total, category }: { project: Project; index: number; total: number; category: "web" | "seo" }) {
+  return <article className="compact-project-card"><div className="compact-project-visual"><span className="project-number">{String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}</span>{category === "seo" ? <SeoMockup /> : index === 0 ? <FrontendMockup /> : <EditableWebMockup index={index} />}</div><div className="compact-project-copy"><p className="project-category">{category === "seo" ? "SEO / Digital Marketing" : "Web Development"}</p><h3>{project.name}</h3><p>{project.description}</p><div className="mt-5 flex flex-wrap gap-2">{project.skills.map((skill) => <span className="skill-badge" key={skill}>{skill}</span>)}</div><div className="mt-auto flex flex-wrap gap-2 pt-6"><ProjectLink href={project.live} icon={<Globe2 />} label="Live Demo" /><ProjectLink href={project.github} icon={<Github />} label="GitHub" /></div></div></article>;
 }
 
 function ProjectLink({ href, icon, label }: { href: string; icon: ReactNode; label: string }) {
