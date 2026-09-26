@@ -79,33 +79,31 @@ const tools = [
   [Search, "Google Search Console"], [BarChart3, "Google Analytics"], [Target, "Google Ads"],
 ] as const;
 
-const webDevelopmentProjects = Array.from({ length: 12 }, (_, index) => ({
-  name: index === 0 ? "Vopple / Dealer Clip" : `Web Project ${String(index + 1).padStart(2, "0")}`,
-  description: index === 0
-    ? "Frontend project developed during my internship at Cortechsols Pvt. Ltd. for a car-related application."
-    : "Editable project summary — replace this with the project purpose, approach and outcome.",
-  skills: index === 0
-    ? ["React", "JavaScript", "Tailwind CSS", "Responsive UI"]
-    : ["React", "TypeScript", "Tailwind CSS"],
-  live: "",
-  github: "",
-}));
+// Edit project details here. Leave `github` empty to hide the Source Code button.
+type Project = { name: string; type: string; description: string; skills: string[]; live: string; github: string };
+const reactStack = ["React", "JavaScript", "HTML", "CSS", "Tailwind CSS"];
+const staticStack = ["HTML", "CSS", "JavaScript", "Responsive Design"];
 
-const seoProjects = [
-  {
-    name: "DriftCreatives SEO Showcase",
-    description: "Self-directed SEO project focused on keyword research, on-page optimization, technical SEO and website visibility.",
-    skills: ["Keyword Research", "On-Page SEO", "Technical SEO", "Google Search Console", "Google Analytics 4", "Website Optimization"],
-    live: "https://driftcreatives-seo-showcase.vercel.app/",
-    github: "",
-  },
-  {
-    name: "SEO / Digital Marketing Project 02",
-    description: "Editable project summary — add the project scope, practical work and tools used here.",
-    skills: ["SEO Strategy", "Digital Marketing", "Website Optimization"],
-    live: "",
-    github: "",
-  },
+const webDevelopmentProjects: Project[] = [
+  { name: "Spawnli", type: "Web Application / Frontend Development", description: "Modern frontend web experience focused on responsive UI and clean user interaction.", skills: reactStack, live: "https://spawnli-seven.vercel.app/", github: "" },
+  { name: "DriftCreatives", type: "Website / Frontend Development", description: "Agency-style website built with a clean layout, clear structure and responsive sections.", skills: reactStack, live: "https://driftcreatives-seo-showcase.vercel.app/", github: "" },
+  { name: "Noir Bistro", type: "Restaurant Website", description: "Responsive restaurant website with a modern visual presentation and user-friendly layout.", skills: ["React", "JavaScript", "HTML", "CSS"], live: "https://restaurant-website-gray-chi.vercel.app/", github: "" },
+  { name: "FitForge", type: "Gym / Fitness Website", description: "Fitness-focused web experience with responsive layouts and modern frontend interactions.", skills: ["React", "JavaScript", "HTML", "CSS"], live: "https://fitness-app-mocha-alpha.vercel.app/", github: "" },
+  { name: "Portfolio", type: "Personal Portfolio", description: "Personal portfolio presenting work and skills through a clean, responsive interface.", skills: reactStack, live: "https://portfolio-next-js-seven-vert.vercel.app/", github: "" },
+  { name: "Dashboard UI", type: "Dashboard Interface", description: "Dashboard interface with structured data panels and a responsive component layout.", skills: reactStack, live: "https://dashboard-ui-alpha-seven.vercel.app/", github: "" },
+  { name: "LUXE.", type: "Small E-commerce / Store", description: "Minimal storefront interface with product-focused layouts and responsive browsing.", skills: reactStack, live: "https://luxe-two-black.vercel.app/", github: "" },
+  { name: "Framing", type: "Website / Frontend", description: "Responsive frontend website built with semantic HTML, styled sections and simple interactions.", skills: staticStack, live: "https://lucent-sfogliatella-d10b2a.netlify.app/", github: "" },
+  { name: "VastuSpaze", type: "Landing Page", description: "Landing page with a clear visual hierarchy and responsive content sections.", skills: staticStack, live: "https://taupe-flan-d8a007.netlify.app/", github: "" },
+  { name: "Flowrise", type: "SaaS Landing Page", description: "SaaS landing page presenting product features through a modern, responsive layout.", skills: ["React", "JavaScript", "HTML", "CSS"], live: "https://saas-landing-page-bice-sigma.vercel.app/", github: "" },
+  { name: "Panda Nutrition", type: "Landing Page", description: "Nutrition-themed landing page with readable content blocks and responsive design.", skills: staticStack, live: "https://gorgeous-starlight-51f723.netlify.app/", github: "" },
+  { name: "SoundCloud Downloader", type: "Landing Page / Web Project", description: "Tool-style landing page with a focused layout and responsive frontend build.", skills: staticStack, live: "https://bucolic-cannoli-547a30.netlify.app/", github: "" },
+];
+
+const seoWork = ["Keyword Research", "On-Page SEO", "Off-Page SEO", "Technical SEO", "Google Analytics 4", "Google Search Console"];
+const seoProjects: Project[] = [
+  { name: "GiftDownloader", type: "SEO & Digital Marketing", description: "SEO work covering keyword research, on-page and off-page optimization, technical SEO and analytics setup.", skills: seoWork, live: "https://gifsdownloader.com", github: "" },
+  { name: "PandaExpress", type: "SEO & Digital Marketing", description: "SEO work covering keyword research, on-page and off-page optimization, technical SEO and analytics setup.", skills: seoWork, live: "https://pandaexpressnutritioncalcu.com/", github: "" },
+  { name: "DriftCreatives", type: "SEO & Digital Marketing", description: "Self-directed SEO project focused on on-page optimization, technical SEO and search measurement.", skills: ["On-Page SEO", "Technical SEO", "Google Analytics 4", "Google Search Console"], live: "https://driftcreatives-seo-showcase.vercel.app/", github: "" },
 ];
 
 const contactLinks = {
@@ -286,7 +284,6 @@ function Projects() {
   return <Section id="projects"><div className="projects-heading"><SectionHeading eyebrow="Selected work" title="Projects With Practical Purpose" description="Hands-on work across organic search, digital marketing and frontend product development." /><div className="project-tabs reveal" role="tablist" aria-label="Project categories"><Button variant="ghost" role="tab" aria-selected={category === "web"} onClick={() => selectCategory("web")}>{category === "web" && <motion.span className="project-tab-indicator" layoutId="project-tab-indicator" />}<span>Web Development</span></Button><Button variant="ghost" role="tab" aria-selected={category === "seo"} onClick={() => selectCategory("seo")}>{category === "seo" && <motion.span className="project-tab-indicator" layoutId="project-tab-indicator" />}<span>SEO &amp; Digital Marketing</span></Button></div></div><div className="projects-stage"><AnimatePresence mode="wait" initial={false}>{category === "web" ? <motion.div key="web-projects" initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: .3, ease: "easeOut" }}><ProjectCarousel projects={webDevelopmentProjects} category="web" currentIndex={webDevelopmentIndex} setCurrentIndex={setWebDevelopmentIndex} /></motion.div> : <motion.div key="seo-projects" initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: .3, ease: "easeOut" }}><ProjectCarousel projects={seoProjects} category="seo" currentIndex={seoIndex} setCurrentIndex={setSeoIndex} /></motion.div>}</AnimatePresence></div></Section>;
 }
 
-type Project = (typeof webDevelopmentProjects)[number];
 
 function ProjectCarousel({ projects, category, currentIndex, setCurrentIndex }: { projects: Project[]; category: "web" | "seo"; currentIndex: number; setCurrentIndex: (index: number) => void }) {
   const [visibleCards, setVisibleCards] = useState(3);
@@ -312,12 +309,18 @@ function ProjectCarousel({ projects, category, currentIndex, setCurrentIndex }: 
   return <div className="project-carousel reveal"><div className="project-viewport"><AnimatePresence initial={false} custom={direction} mode="popLayout"><motion.div key={`${category}-${currentIndex}-${visibleCards}`} custom={direction} variants={{ enter: (travel: number) => ({ x: reduceMotion ? 0 : travel * 54, opacity: 0, scale: .985 }), center: { x: 0, opacity: 1, scale: 1 }, exit: (travel: number) => ({ x: reduceMotion ? 0 : travel * -54, opacity: 0, scale: .985 }) }} initial="enter" animate="center" exit="exit" transition={{ duration: reduceMotion ? 0 : .42, ease: [0.22, 1, 0.36, 1] }} className={`project-visible-grid project-visible-grid-${groupSize}`} drag={visibleCards === 1 ? "x" : false} dragConstraints={{ left: 0, right: 0 }} dragElastic={.12} onDragEnd={(_, info) => { if (info.offset.x < -45) move(currentIndex + 1); if (info.offset.x > 45) move(currentIndex - 1); }}>{visibleProjects.map((project, offset) => <motion.div className="project-card-motion" key={`${category}-${project.name}`} initial={{ opacity: 0, scale: .97 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: .3, delay: reduceMotion ? 0 : offset * .045 }}><CompactProjectCard project={project} index={currentIndex + offset} total={projects.length} category={category} /></motion.div>)}</motion.div></AnimatePresence></div><div className="carousel-controls"><div className="carousel-arrows"><Button variant="glass" onClick={() => move(currentIndex - 1)} disabled={currentIndex === 0}><ChevronLeft /> Previous</Button><Button variant="glass" onClick={() => move(currentIndex + 1)} disabled={currentIndex === maximumIndex}>Next <ChevronRight /></Button></div><div className="carousel-dots" aria-label={`Project group ${currentIndex + 1} of ${maximumIndex + 1}`}>{Array.from({ length: maximumIndex + 1 }, (_, index) => <Button variant="ghost" size="icon" key={`${category}-${index}`} className={index === currentIndex ? "active" : ""} onClick={() => move(index)} aria-label={`Show project group ${index + 1}`} />)}</div><span className="carousel-count">{String(currentIndex + 1).padStart(2, "0")} / {String(projects.length).padStart(2, "0")}</span></div></div>;
 }
 
+function ProjectPreview({ project, category, index }: { project: Project; category: "web" | "seo"; index: number }) {
+  const [failed, setFailed] = useState(false);
+  if (failed || !project.live) return category === "seo" ? <SeoMockup /> : <EditableWebMockup index={index} />;
+  return <div className="project-shot"><div className="project-shot-bar"><span /><span /><span /><em>{project.live.replace(/^https?:\/\//, "").replace(/\/$/, "")}</em></div><img src={`https://image.thum.io/get/width/900/crop/620/${project.live}`} alt={`Homepage preview of ${project.name}`} loading="lazy" decoding="async" onError={() => setFailed(true)} /></div>;
+}
+
 function CompactProjectCard({ project, index, total, category }: { project: Project; index: number; total: number; category: "web" | "seo" }) {
-  return <article className="compact-project-card"><div className="compact-project-visual"><span className="project-number">{String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}</span>{category === "seo" ? <SeoMockup /> : index === 0 ? <FrontendMockup /> : <EditableWebMockup index={index} />}</div><div className="compact-project-copy"><p className="project-category">{category === "seo" ? "SEO / Digital Marketing" : "Web Development"}</p><h3>{project.name}</h3><p>{project.description}</p><div className="mt-5 flex flex-wrap gap-2">{project.skills.map((skill) => <span className="skill-badge" key={skill}>{skill}</span>)}</div><div className="mt-auto flex flex-wrap gap-2 pt-6"><ProjectLink href={project.live} icon={<Globe2 />} label="Live Demo" /><ProjectLink href={project.github} icon={<Github />} label="GitHub" /></div></div></article>;
+  return <article className="compact-project-card"><div className="compact-project-visual"><span className="project-number">{String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}</span><ProjectPreview project={project} category={category} index={index} /></div><div className="compact-project-copy"><p className="project-category">{project.type}</p><h3>{project.name}</h3><p>{project.description}</p><div className="mt-5 flex flex-wrap gap-2">{project.skills.map((skill) => <span className="skill-badge" key={skill}>{skill}</span>)}</div><div className="mt-auto flex flex-wrap gap-2 pt-6"><ProjectLink href={project.live} icon={<Globe2 />} label={category === "seo" ? "Visit Website" : "Live Demo"} />{project.github && <ProjectLink href={project.github} icon={<Github />} label="Source Code" />}</div></div></article>;
 }
 
 function ProjectLink({ href, icon, label }: { href: string; icon: ReactNode; label: string }) {
-  return href ? <Button asChild variant="glass" size="sm"><a href={href} target="_blank" rel="noreferrer">{icon}{label}</a></Button> : <Button variant="glass" size="sm" disabled title="Link can be added later">{icon}{label}</Button>;
+  return href ? <Button asChild variant="glass" size="sm" className="project-link"><a href={href} target="_blank" rel="noopener noreferrer">{icon}{label}<ArrowUpRight className="project-link-arrow" /></a></Button> : <Button variant="glass" size="sm" disabled title="Link can be added later">{icon}{label}</Button>;
 }
 
 function SeoMockup() { return <div className="mock-window"><MockTop /><div className="mock-search"><Search /> drift creatives seo</div><div className="mock-metrics"><span><b>Keywords</b><i /></span><span><b>Pages</b><i /></span><span><b>Health</b><i /></span></div><div className="mock-graph">{[28, 40, 36, 55, 67, 63, 85].map((n) => <i key={n} style={{ height: `${n}%` }} />)}</div></div>; }
