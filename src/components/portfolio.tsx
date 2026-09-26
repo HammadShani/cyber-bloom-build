@@ -1,4 +1,4 @@
-import {
+import { ArrowUpRight,
   ArrowRight,
   BarChart3,
   Braces,
