@@ -312,7 +312,7 @@ function ProjectCarousel({ projects, category, currentIndex, setCurrentIndex }: 
 function ProjectPreview({ project, category, index }: { project: Project; category: "web" | "seo"; index: number }) {
   const [failed, setFailed] = useState(false);
   if (failed || !project.live) return category === "seo" ? <SeoMockup /> : <EditableWebMockup index={index} />;
-  return <div className="project-shot"><div className="project-shot-bar"><span /><span /><span /><em>{project.live.replace(/^https?:\/\//, "").replace(/\/$/, "")}</em></div><img src={`https://image.thum.io/get/width/900/crop/620/${project.live}`} alt={`Homepage preview of ${project.name}`} loading="lazy" decoding="async" onError={() => setFailed(true)} /></div>;
+  return <div className="project-shot"><div className="project-shot-bar"><span /><span /><span /><em>{project.live.replace(/^https?:\/\//, "").replace(/\/$/, "")}</em></div><img src={`https://s0.wp.com/mshots/v1/${encodeURIComponent(project.live)}?w=900&h=620`} alt={`Homepage preview of ${project.name}`} loading="lazy" decoding="async" onError={() => setFailed(true)} /></div>;
 }
 
 function CompactProjectCard({ project, index, total, category }: { project: Project; index: number; total: number; category: "web" | "seo" }) {
